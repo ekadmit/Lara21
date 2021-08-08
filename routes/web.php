@@ -2,6 +2,13 @@
 
 use Illuminate\Support\Facades\Route;
 
+// controllers
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\NewsController as AdminNewsController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,24 +20,54 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+//Route::get('/', function () {
+//    return view('welcome');
+//});
+
+
+Route::get('/', [HomeController::class, 'index']);
+
+//объединяем в группу то, что касается новостей на стороне пользователя
+Route::group([ 'prefix' => 'news'], function() {
+    Route::get('/', [NewsController::class, 'index'])
+    -> name('news');
+    Route::get('/show/{id}', [NewsController::class, 'show']) -> where('id', '\d+')
+    -> name('news.show');
 });
 
-Route::get('/welcome/{name}', function( string $name){
-    return "Добро пожаловать на сайт, {$name}";
+//подключаем ресурс-контроллеры и группируем для админки
+Route::group([ 'prefix' => 'admin', 'as' => 'admin.'], function() {
+    Route::resource('categories', AdminCategoryController::class);
+    Route::resource('news', AdminNewsController::class);
 });
 
-Route::get('/about', function(){
-    $data = date("Y")-1982;
-    return "<h1>О компании</h1> <p>Мы работаем более {$data} лет на рынке новостей</p>";
+//объединяем в группу категории
+Route::group(['prefix'=>'category'], function(){
+    Route::get('/', [CategoryController::class, 'index']) -> name('category');
+    Route::get('/show/{id}', [CategoryController::class, 'show']) -> where('id', '\d+')
+    -> name('category.show');
 });
 
-Route::get('/news', function(){
-    $date = date("Y-m-d H:i:s");
-    return "Новости сегодня, {$date}";
-});
 
-Route::get('/news/{id}', function(string $id){
-    return "Новость № {$id}";
-});
+//
+//Route::get('/hi/{name}', function( string $name){
+//    return "Hello, {$name}";
+//});
+//
+//Route::get('/welcome/{name}', function( string $name){
+//    return "Добро пожаловать на сайт, {$name}";
+//});
+//
+//Route::get('/about', function(){
+//    $data = date("Y")-1982;
+//    return "<h1>О компании</h1> <p>Мы работаем более {$data} лет на рынке новостей</p>";
+//});
+//
+//Route::get('/news', function(){
+//    $date = date("Y-m-d H:i:s");
+//    return "Новости сегодня, {$date}";
+//});
+//
+//Route::get('/news/{id}', function(string $id){
+//    return "Новость № {$id}";
+//});
