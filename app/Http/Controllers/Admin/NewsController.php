@@ -10,24 +10,26 @@ class NewsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application\|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
      */
 
     //вывод всех записей
     public function index()
     {
-        return response("Список новостей");
+        return view('admin.news.index', [
+            'newsList' => $this->newsList
+        ]);
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     //создание новой сущности - поста
     public function create()
     {
-        //
+        return view('admin.news.create');
     }
 
     /**

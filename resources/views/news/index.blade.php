@@ -1,22 +1,32 @@
-@include('header')
+@extends('layouts.main')
+@section('title')Список новостей - @parent @stop
+@section('slug') @parent @stop
+@section('content')
+@forelse($newsList as $news)
 
-<h1>List News</h1>
-<?php foreach ($news as $n): ?>
-<?php foreach ($categories as $category)?>
-<div>
-    <a href="
-<?= route('news.show', [
-        'id' => $n['id']
-    ]) ?>">
-        <h2><?= $n['title'] ?></h2></a>
-    <a href="<?= route('category.show', [
-        'id' => $category['id']
-    ]) ?>"><p>Категория: <?= $category['title']?></p></a>
-    <p><?= $n['description']?></p>
-</div>
-<hr>
-<?php endforeach; ?>
+        <div class="post-preview">
+        <a href="{{ route('news.show', ['id' => $news['id'] ]) }}">
+            <h2 class="post-title">{{ $news['title'] }}</h2>
+            <h3 class="post-subtitle">{{ $news['description']}}</h3>
+        </a>
+        <p class="post-meta">
+            Опубликовал
+            <a href="#!">Админ</a>
+            {{ now()->format('d-m-Y H:i') }}
+        </p>
+    </div>
+    <!-- Divider-->
+    <hr class="my-4" />
+@empty
+    <h2>Новостей нет</h2>
+@endforelse
+    <!-- Pager-->
+    <div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
+    </div>
 
-@include('footer')
+@endsection
+
+
+
 
 

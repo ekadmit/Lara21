@@ -1,17 +1,27 @@
-@include('header')
-<h1>Categories List</h1>
+@extends('layouts.main')
+@section('title')Список категорий - @parent @stop
+@section('slug') @parent @stop
+@section('content')
+<h2 class="post-title" style="margin-bottom: 50px;">Список категорий</h2>
 
-<?php foreach ($category as $c): ?>
-<div>
+@forelse($category as $c)
+<div class="post-preview">
     <a href="
-<?= route('category.show', [
+{{ route('category.show', [
         'id' => $c['id']
-    ]) ?>">
-        <h2><?= $c['title'] ?></h2></a>
+    ]) }}">
+        <h3 class="post-subtitle">{{ $c['title'] }}</h3></a>
 </div>
-<?php endforeach; ?>
+<!-- Divider-->
+<hr class="my-4" />
+@empty
+    <h2>Новостей нет</h2>
+@endforelse
+<!-- Pager-->
+<div class="d-flex justify-content-end mb-4"><a class="btn btn-primary text-uppercase" href="#!">Older Posts →</a></div>
+</div>
 
-@include('footer')
+@endsection
 
 
 
