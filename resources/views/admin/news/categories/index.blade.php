@@ -11,17 +11,19 @@
             <table class="table table-bordered">
                 <thead>
                 <tr>
+                    <th>#ID</th>
                     <th>Название</th>
-                    <th>Дата добавления</th>
+                    <th>Описание</th>
                     <th>Управление</th>
                 </tr>
                 </thead>
                 <tbody>
-                @forelse($category as $c)
+                @forelse($category as $category)
                     <tr>
-                        <th>{{$c['title']}}</th>
-                        <th>{{now()->format('d-m-Y H:i')}}</th>
-                        <th><a href="#" style="font-size:12px;"> ред.</a><a href="javascript:;" style="font-size:12px; color: red;"> уд.</a></th>
+                        <th>{{$category->id}}</th>
+                        <th>{{$category->title}}</th>
+                        <th>{{$category->description}}</th>
+                        <th><a href="{{ route('admin.categories.edit',['category'=>$category->id]) }}" style="font-size:12px;"> ред.</a><a href="javascript:;" style="font-size:12px; color: red;"> уд.</a></th>
 
                     </tr>
                 @empty
