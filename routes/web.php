@@ -8,6 +8,9 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
+use App\Http\Controllers\Admin\IndexController;
+use \App\Http\Controllers\ContactController;
+use App\Http\Controllers\ExportSourceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +30,18 @@ use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 
 Route::get('/', [HomeController::class, 'index']);
 
+//роут для формы обратной связи
+Route::group([ 'prefix' => 'feedback'], function() {
+    Route::get('/', [ContactController::class, 'index'])->name('feedback');
+    Route::get('/store', [ContactController::class, 'store'])->name('feedback.store');
+});
+
+//роут для выгрузки
+Route::group([ 'prefix' => 'export'], function() {
+    Route::get('/', [ExportSourceController::class, 'index'])->name('export');
+    Route::get('/store', [ExportSourceController::class, 'store'])->name('export.store');
+});
+
 //объединяем в группу то, что касается новостей на стороне пользователя
 Route::group([ 'prefix' => 'news'], function() {
     Route::get('/', [NewsController::class, 'index'])
@@ -37,6 +52,7 @@ Route::group([ 'prefix' => 'news'], function() {
 
 //подключаем ресурс-контроллеры и группируем для админки
 Route::group([ 'prefix' => 'admin', 'as' => 'admin.'], function() {
+    Route::get('/', IndexController::class)->name('index');
     Route::resource('categories', AdminCategoryController::class);
     Route::resource('news', AdminNewsController::class);
 });
@@ -47,6 +63,8 @@ Route::group(['prefix'=>'category'], function(){
     Route::get('/show/{id}', [CategoryController::class, 'show']) -> where('id', '\d+')
     -> name('category.show');
 });
+
+
 
 
 //

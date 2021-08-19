@@ -10,7 +10,11 @@
 
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
+        <div class="topbar-divider d-none d-sm-block"></div>
 
+        <li class="nav-item dropdown no-arrow">
+            <a class="nav-link dropdown-toggle" href="/" id="userDropdown" role="button"
+               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="color: #858796;">Вернуться на портал</a></li>
         <!-- Nav Item - Search Dropdown (Visible Only XS) -->
         <!-- Nav Item - Messages -->
 
