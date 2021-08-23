@@ -31,10 +31,10 @@ class ExportSourceController extends Controller
 
         ]);
 
-        $info = response()->json($request->all());
+        $info = json_encode($request->all());
 
-          Storage::append('exportRequests', $info);
-          return response('Ваша форма отправлена', 200);
+        file_put_contents(public_path('files/file.txt', $info));
+        return response('Ваша форма отправлена', 200);
 
     }
 

@@ -8,9 +8,9 @@
 <div class="post-preview">
     <a href="
 {{ route('category.show', [
-        'id' => $c['id']
+        'category' => $c->id
     ]) }}">
-        <h3 class="post-subtitle">{{ $c['title'] }}</h3></a>
+        <h3 class="post-subtitle">{{ $c->title }}</h3></a>
 </div>
 <!-- Divider-->
 <hr class="my-4" />

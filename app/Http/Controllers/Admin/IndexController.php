@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
+use App\Models\News;
 use Illuminate\Http\Request;
 
 class IndexController extends Controller
@@ -14,10 +16,13 @@ class IndexController extends Controller
           //return response()->json($this->newsList, 200); //вернули данные в формате json
           //return response()->download('robots.txt'); //отдали файл на скачивание
 
+        $category = Category::all();
+        $news = News::all();
+
         return view('admin.index',
             [
-            'countNews' => count($this->newsList),
-            'countCategories' =>count($this->categoryList)
+            'countNews' => count($news),
+            'countCategories' =>count($category)
         ]
         );
     }

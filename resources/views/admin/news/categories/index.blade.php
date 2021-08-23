@@ -7,18 +7,19 @@
                 class="fas fa-plus fa-sm text-white-50"></i> Добавить новую</a>
     </div>
     <div class="row">
+        @include('inc.message')
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
                 <tr>
-                    <th>#ID</th>
+                    <th>#ID&nbsp;<a href="?sort=desc">ds</a>&nbsp;<a href="?sort=asc">as</a></th>
                     <th>Название</th>
                     <th>Описание</th>
                     <th>Управление</th>
                 </tr>
                 </thead>
                 <tbody>
-                @forelse($category as $category)
+                @forelse($categories as $category)
                     <tr>
                         <th>{{$category->id}}</th>
                         <th>{{$category->title}}</th>
@@ -28,11 +29,12 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="3">Категорий нет</td>
+                        <td colspan="4">Категорий нет</td>
                     </tr>
                 @endforelse
                 </tbody>
             </table>
+            {{ $categories->links() }}
 
         </div>
 

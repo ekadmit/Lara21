@@ -42,5 +42,17 @@
 
     <!-- Divider -->
     <hr class="sidebar-divider">
+    <div class="sidebar-heading">
+        Работа с выгрузкой
+    </div>
 
+    <li class="nav-item @if(request()-> routeIs('admin.export.*')) active @endif">
+        <a class="nav-link collapsed" href="{{route('admin.export.index')}}" >
+            <i class="fas fa-fw fa-list"></i>
+            <span>Запросы на выгрузку</span>
+        </a>
+    </li>
+
+    <!-- Divider -->
+    <hr class="sidebar-divider">
 </ul>

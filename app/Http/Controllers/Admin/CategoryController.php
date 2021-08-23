@@ -13,12 +13,14 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $model = new Category();
-        $categories =$model->getCategories();
+
+        $categories = Category::orderBy('id', $request->query('sort', 'asc'))
+            ->paginate(config('paginate.admin.categories')
+        );
         return view('admin.news.categories.index',[
-            'category' => $categories
+            'categories' => $categories
 
         ]);
     }
@@ -43,16 +45,26 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+           'title' => ['required', 'string']
+        ]);
+
+        $category = Category::create(
+            $request->only(['title', 'description'])
+        );
+        if($category) {
+            return redirect()->route('admin.categories.index') -> with ('success', 'Категория успешно добавлена');
+        }
+        return back()-> withInput()->with('error', 'Не удалось создать категорию.');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  Category $category
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Category $category)
     {
         //
     }
@@ -60,25 +72,39 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  Category $category
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Category $category)
     {
-        //
+        return view('admin.news.categories.edit', [
+        'category' => $category
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  Category $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Category $category)
     {
-        //
+        $request->validate([
+            'title' => ['required', 'string']
+        ]);
+
+        $category->fill(
+            $request->only('title', 'description'))
+            ->save();
+
+        if($category){
+            return redirect()->route('admin.categories.index') -> with ('success', 'Категория успешно изменена');
+        }
+        return back()-> withInput()->with('error', 'Не удалось изменить категорию.');
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -86,7 +112,7 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Category $category)
     {
         //
     }

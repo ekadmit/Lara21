@@ -2,25 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
+
 class CategoryController extends Controller
 {
 
  public function index(){
+     $category = Category::all();
      return view ('categories.index', [
-         'category' => $this->categoryList
+         'category' => $category
      ]);
  }
 
- public function show(int $id){
-     $categoryList = [];
-     foreach ($this->categoryList as $categories){
-         if($categories['id'] === $id){
-             $categoryList[] = $categories;
-         }
-     }
+ public function show(Category $category){
 
      return view ('categories.show', [
-         'id' => $id,
+         'category' => $category,
      ]);
  }
 

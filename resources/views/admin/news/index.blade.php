@@ -7,11 +7,13 @@
                 class="fas fa-plus fa-sm text-white-50"></i> Добавить новую</a>
     </div>
 <div class="row">
+    @include('inc.message')
     <div class="table-responsive">
         <table class="table table-bordered">
             <thead>
             <tr>
                 <th>Заголовок</th>
+                <th>Категория</th>
                 <th>Статус</th>
                 <th>Автор</th>
                 <th>Дата добавления</th>
@@ -22,9 +24,11 @@
             @forelse($newsList as $news)
                 <tr>
                     <th>{{$news->title}}</th>
+                    <th>{{ optional($news->category)->title }}</th>
                     <th>{{$news->status}}</th>
                     <th>{{$news->author}}</th>
-                    <th>{{now()->format('d-m-Y H:i')}}</th>
+{{--                    <th>{{$news->created_at}}</th>--}}
+                    <th>@if($news->updated_at) {{$news->updated_at->format('d-m-Y H:i')}} @else {{now()->format('d-m-Y H:i')}}@endif</th>
                     <th><a href="{{route('admin.news.edit', ['news' => $news->id])}}" style="font-size:12px;"> ред.</a><a href="javascript:;" style="font-size:12px; color: red;"> уд.</a></th>
                 </tr>
             @empty
@@ -34,6 +38,7 @@
             @endforelse
             </tbody>
         </table>
+        {{ $newsList->links() }}
 
     </div>
 </div>
