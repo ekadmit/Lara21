@@ -7,6 +7,11 @@
                 class="fas fa-list fa-sm text-white-50"></i> К списку категорий</a>
     </div>
     <div class="row">
+        @if($errors->any())
+            @foreach($errors->all() as $error)
+                <div class="alert alert-danger">{{ $error }}</div>
+            @endforeach
+        @endif
         @include('inc.message')
         <div class="table-responsive">
             <form method="post" action="{{ route('admin.categories.update', ['category' => $category]) }}">

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreExportRequest;
+use App\Http\Requests\UpdateExportRequest;
 use Illuminate\Http\Request;
 use App\Models\Export;
 
@@ -40,14 +42,10 @@ class ExportController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(Request $request)
+    public function store(StoreExportRequest $request)
     {
-        $request -> validate([
-            'name' => ['required', 'string'],
-        ]);
 
-        $data = $request->only(['id', 'name', 'phone', 'email', 'information', 'status']);
-        $export = Export::create($data);
+        $export = Export::create($request->validated());
         if($export) {
             return redirect()->route('admin.export.index') -> with ('success', 'Новость успешно добавлена');
         }
@@ -88,14 +86,11 @@ class ExportController extends Controller
      * @param  Export $export
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(Request $request, Export $export)
+    public function update(UpdateExportRequest $request, Export $export)
     {
-        $request -> validate([
-            'name' => ['required', 'string'],
-        ]);
 
         $export = $export->fill(
-            $request->only(['id', 'name', 'phone', 'email', 'information', 'status']))->save();
+            $request->validated())->save();
 
         if($export) {
             return redirect()->route('admin.export.index') -> with ('success', 'Данные выгрузки успешно изменены');
@@ -109,8 +104,18 @@ class ExportController extends Controller
      * @param  Export $export
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Export $export)
+    public function destroy(Request $request, Export $export)
     {
-        //
+        if($request->ajax()) {
+            try{
+                $news -> delete();
+                return response()->json('ok');
+            } catch(\Exeption $e) {
+                \Log::error($e->getMessage());
+
+                return response()->json('error', 400);
+
+            }
+        }
     }
 }

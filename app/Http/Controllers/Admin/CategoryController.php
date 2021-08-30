@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -43,15 +45,10 @@ class CategoryController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
-        $request->validate([
-           'title' => ['required', 'string']
-        ]);
-
-        $category = Category::create(
-            $request->only(['title', 'description'])
-        );
+            $category = Category::create(
+            $request->validated());
         if($category) {
             return redirect()->route('admin.categories.index') -> with ('success', 'Категория успешно добавлена');
         }
@@ -89,14 +86,10 @@ class CategoryController extends Controller
      * @param  Category $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(UpdateCategoryRequest $request, Category $category)
     {
-        $request->validate([
-            'title' => ['required', 'string']
-        ]);
-
         $category->fill(
-            $request->only('title', 'description'))
+            $request->validated())
             ->save();
 
         if($category){
@@ -112,8 +105,18 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy(Request $request, Category $category)
     {
-        //
+        if($request->ajax()) {
+            try{
+                $news -> delete();
+                return response()->json('ok');
+            } catch(\Exeption $e) {
+                \Log::error($e->getMessage());
+
+                return response()->json('error', 400);
+
+            }
+        }
     }
 }

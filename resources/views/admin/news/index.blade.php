@@ -29,7 +29,7 @@
                     <th>{{$news->author}}</th>
 {{--                    <th>{{$news->created_at}}</th>--}}
                     <th>@if($news->updated_at) {{$news->updated_at->format('d-m-Y H:i')}} @else {{now()->format('d-m-Y H:i')}}@endif</th>
-                    <th><a href="{{route('admin.news.edit', ['news' => $news->id])}}" style="font-size:12px;"> ред.</a><a href="javascript:;" style="font-size:12px; color: red;"> уд.</a></th>
+                    <th><a href="{{route('admin.news.edit', ['news' => $news->id])}}" style="font-size:12px;"> ред.</a><a href="javascript:;" rel="{{ $news->id }}" class="delete" style="font-size:12px; color: red;"> уд.</a></th>
                 </tr>
             @empty
                 <tr>
@@ -44,3 +44,29 @@
 </div>
 
 @endsection
+
+@push('js')
+    <script type="text/javascript">
+        $(function () {
+            $(".delete").on('click', function(){
+                let id = $(this).attr('rel');
+                if(confirm("Подтверждаете удаление записи c ID = " + id + "?")){
+                    $.ajax({
+                        headers: {
+                          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        type: "DELETE",
+                        url: "/admin/news/" + id,
+                        dataType: 'json',
+                        success: function (responce) {
+                            alert('Запись удалена!');
+                            location.reload();
+                        }
+                    })
+                }
+            });
+        });
+
+    </script>
+@endpush
+

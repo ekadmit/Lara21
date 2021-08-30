@@ -12,6 +12,7 @@
         <table class="table table-bordered">
             <thead>
             <tr>
+                <th>ID</th>
                 <th>Имя</th>
                 <th>Телефон</th>
                 <th>Email</th>
@@ -23,12 +24,13 @@
             <tbody>
             @forelse($exportList as $export)
                 <tr>
+                    <th>{{$export->id}}</th>
                     <th>{{$export->name}}</th>
                     <th>{{$export->phone}}</th>
                     <th>{{$export->email}}</th>
                     <th>{{$export->information}}</th>
                     <th>{{$export->status}}</th>
-                    <th><a href="{{route('admin.export.edit', ['export' => $export->id])}}" style="font-size:12px;"> ред.</a><a href="javascript:;" style="font-size:12px; color: red;"> уд.</a></th>
+                    <th><a href="{{route('admin.export.edit', ['export' => $export->id])}}" style="font-size:12px;"> ред.</a><a href="javascript:;" rel="{{ $export->id }}" class="delete" style="font-size:12px; color: red;"> уд.</a></th>
                 </tr>
             @empty
                 <tr>
@@ -43,3 +45,28 @@
 </div>
 
 @endsection
+
+@push('js')
+    <script type="text/javascript">
+        $(function () {
+            $(".delete").on('click', function(){
+                let id = $(this).attr('rel');
+                if(confirm("Подтверждаете удаление записи c ID = " + id + "?")){
+                    $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        type: "DELETE",
+                        url: "/admin/news/" + id,
+                        dataType: 'json',
+                        success: function (responce) {
+                            alert('Запись удалена!');
+                            location.reload();
+                        }
+                    })
+                }
+            });
+        });
+
+    </script>
+@endpush
