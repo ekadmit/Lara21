@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomePageController;
 use Illuminate\Support\Facades\Route;
 
 // controllers
@@ -8,10 +9,11 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
-use App\Http\Controllers\Admin\IndexController;
+use App\Http\Controllers\Admin\IndexController as AdminIndexController;
 use \App\Http\Controllers\ContactController;
 use App\Http\Controllers\ExportSourceController;
 use App\Http\Controllers\Admin\ExportController as AdminExportController;
+use App\Http\Controllers\Account\IndexController as AccountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +31,7 @@ use App\Http\Controllers\Admin\ExportController as AdminExportController;
 //});
 
 
-Route::get('/', [HomeController::class, 'index']);
+Route::get('/', [HomePageController::class, 'index']);
 
 //роут для формы обратной связи
 Route::group([ 'prefix' => 'feedback'], function() {
@@ -51,13 +53,17 @@ Route::group([ 'prefix' => 'news'], function() {
     -> name('news.show');
 });
 
-//подключаем ресурс-контроллеры и группируем для админки
-Route::group([ 'prefix' => 'admin', 'as' => 'admin.'], function() {
-    Route::get('/', IndexController::class)->name('index');
-    Route::resource('categories', AdminCategoryController::class);
-    Route::resource('news', AdminNewsController::class);
-    Route::resource('export', AdminExportController::class);
-});
+Route::group(['middleware' => 'auth'], function (){
+    Route::get('account', AccountController::class)->name('account');
+    Route::group([ 'prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'admin'], function() {
+        Route::get('/', AdminIndexController::class)->name('index');
+        Route::resource('categories', AdminCategoryController::class);
+        Route::resource('news', AdminNewsController::class);
+        Route::resource('export', AdminExportController::class);
+    });
+}
+);
+
 
 //объединяем в группу категории
 Route::group(['prefix'=>'category'], function(){
@@ -68,6 +74,20 @@ Route::group(['prefix'=>'category'], function(){
 
 
 Route::get('collection', function(){
+
+    //установить сессию
+//    session(['new_session' =>1]);
+//    session()->put('key', 'value');
+
+    //проверяем, установлена ли сессия
+//    if(session()->has('new_session')){
+//        dd(session()->all()); // вывести все сессии
+//    }
+//
+    //удалить сессию
+//    session()->forget('new_session');
+
+
     $collect = collect([
        ['name'=> 'Anna', 'age' => 20, 'work' => 'IT'],
        ['name'=> 'Joe', 'age' => 30, 'work' => 'Economy'],
@@ -81,3 +101,11 @@ Route::get('collection', function(){
 
 });
 
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
