@@ -14,7 +14,8 @@ use \App\Http\Controllers\ContactController;
 use App\Http\Controllers\ExportSourceController;
 use App\Http\Controllers\Admin\ExportController as AdminExportController;
 use App\Http\Controllers\Account\IndexController as AccountController;
-
+use App\Http\Controllers\Admin\ParserController;
+use App\Http\Controllers\SocialController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -57,6 +58,7 @@ Route::group(['middleware' => 'auth'], function (){
     Route::get('account', AccountController::class)->name('account');
     Route::group([ 'prefix' => 'admin', 'as' => 'admin.', 'middleware' => 'admin'], function() {
         Route::get('/', AdminIndexController::class)->name('index');
+        Route::get('/parser', ParserController::class)->name('parser');
         Route::resource('categories', AdminCategoryController::class);
         Route::resource('news', AdminNewsController::class);
         Route::resource('export', AdminExportController::class);
@@ -109,3 +111,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::group(['middleware' => 'guest'], function(){
+    Route::get('/init/vkontakte', [SocialController::class, 'init'])->name('vk.init');
+    Route::get('/callback/vkontakte',[SocialController::class, 'init'])->name('vk.callback');
+
+});
