@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreNewsRequest;
 use App\Http\Requests\UpdateNewsRequest;
+use App\Services\UploadedService;
 use App\Models\Category;
 use App\Models\News;
 use Illuminate\Http\Request;
@@ -98,9 +99,23 @@ class NewsController extends Controller
     //изменяет сущность
     public function update(UpdateNewsRequest $request, News $news)
     {
+        if($request->hasFile('image')){
+            $file = $request->file('image');
+            $ext = $file->getClientOriginalExtension();
 
-        $news = $news->fill(
-            $request->validated())->save();
+            $fileName = uniqid("file") . " . " . $ext;
+            $file->storeAs('news', $fileName);
+        }
+
+        $validated = $request->validated();
+        if($request->hasFile('image')) {
+            $uploadedService = app(UploadedService::class);
+            $validated['image'] = $uploadedService->fileUpload(
+                $request->file('image')
+            );
+        }
+
+        $news = $news->fill($validated)->save();
 
         if($news) {
             return redirect()->route('admin.news.index') -> with ('success', __('messages.admin.news.update.success'));

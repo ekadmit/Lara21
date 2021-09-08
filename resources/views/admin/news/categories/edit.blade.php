@@ -14,7 +14,7 @@
         @endif
         @include('inc.message')
         <div class="table-responsive">
-            <form method="post" action="{{ route('admin.categories.update', ['category' => $category]) }}">
+            <form method="post" action="{{ route('admin.categories.update', ['category' => $category]) }}" enctype="multipart/form-data">
                 @csrf
                 @method('put')
                 <div class="form-group">

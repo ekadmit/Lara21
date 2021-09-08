@@ -15,7 +15,7 @@
         @endif
         @include('inc.message')
         <div class="table-responsive">
-            <form method="post" action="{{ route('admin.news.update', ['news' => $news]) }}">
+            <form method="post" action="{{ route('admin.news.update', ['news' => $news]) }}" enctype="multipart/form-data">
                 @csrf
                 @method('put')
                 <div class="form-group">
@@ -44,7 +44,7 @@
                 </div>
                 <div class="form-group">
                     <label for="image">Изображение</label>
-                    <input type="text" class="form-control" name="image" id="image" value="{{ $news->image }}">
+                    <input type="file" class="form-control" name="image" id="image">
                 </div>
                 <div class="form-group">
                     <label for="status">Статус</label>
